@@ -1,6 +1,7 @@
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
+import { ActiveRound } from "./components/ActiveRound";
 import "./App.css";
 
 function App() {
@@ -98,6 +99,10 @@ function App() {
                   <summary>Player Bets</summary>
                   <pre>{JSON.stringify(round.playerBets, null, 2)}</pre>
                 </details>
+                <div style={{ marginTop: "15px", padding: "15px", backgroundColor: "#f8f9fa", borderRadius: "4px" }}>
+                  <h4>Active Round View:</h4>
+                  <ActiveRound gameId={round.gameId} />
+                </div>
               </div>
             ))}
           </div>
