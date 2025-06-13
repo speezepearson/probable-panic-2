@@ -1,13 +1,25 @@
+import { PlayerId, PlayerIdSchema } from '../../convex/shared/playerId';
+
 const PLAYER_ID_KEY = 'probable-panic-player-id';
 
-export function generatePlayerId(): string {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+export function generatePlayerId(): PlayerId {
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyz';
+  let result = '';
+  
+  for (let i = 0; i < 16; i++) {
+    result += chars[Math.floor(Math.random() * chars.length)];
+  }
+  
+  return PlayerIdSchema.parse(result);
 }
 
-export function getOrCreatePlayerId(): string {
+export function getOrCreatePlayerId(): PlayerId {
   const existing = localStorage.getItem(PLAYER_ID_KEY);
   if (existing) {
-    return existing;
+    const parsed = PlayerIdSchema.safeParse(existing);
+    if (parsed.success) {
+      return parsed.data;
+    }
   }
   
   const newId = generatePlayerId();
@@ -15,6 +27,10 @@ export function getOrCreatePlayerId(): string {
   return newId;
 }
 
-export function getPlayerId(): string | null {
-  return localStorage.getItem(PLAYER_ID_KEY);
+export function getPlayerId(): PlayerId | null {
+  const stored = localStorage.getItem(PLAYER_ID_KEY);
+  if (!stored) return null;
+  
+  const parsed = PlayerIdSchema.safeParse(stored);
+  return parsed.success ? parsed.data : null;
 }

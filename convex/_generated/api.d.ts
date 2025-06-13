@@ -15,6 +15,7 @@ import type {
 } from "convex/server";
 import type * as mutations from "../mutations.js";
 import type * as queries from "../queries.js";
+import type * as shared_playerId from "../shared/playerId.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -27,6 +28,7 @@ import type * as queries from "../queries.js";
 declare const fullApi: ApiFromModules<{
   mutations: typeof mutations;
   queries: typeof queries;
+  "shared/playerId": typeof shared_playerId;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
