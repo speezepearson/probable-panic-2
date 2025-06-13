@@ -1,5 +1,6 @@
 import { query } from "./_generated/server";
 import { v } from "convex/values";
+import { PlayerIdSchema } from "./shared/playerId";
 
 export const getAllGames = query({
   args: {},
@@ -28,6 +29,9 @@ export const getCurrentRound = query({
     playerId: v.string(),
   },
   handler: async (ctx, { gameId, playerId }) => {
+    // Validate player ID
+    const validatedPlayerId = PlayerIdSchema.parse(playerId);
+    
     const currentRound = await ctx.db
       .query("currentRounds")
       .withIndex("by_gameId", (q) => q.eq("gameId", gameId))
@@ -42,7 +46,7 @@ export const getCurrentRound = query({
       throw new Error("Question not found");
     }
 
-    const playerBets = currentRound.playerBets[playerId] || [];
+    const playerBets = currentRound.playerBets[validatedPlayerId] || [];
 
     return {
       questionText: question.text,

@@ -95,7 +95,7 @@ Unless Spencer specifies otherwise:
 7. Push branch and create PR via GitHub CLI (`gh pr create`)
 8. Verify CI passes on GitHub, make & push any needed corrections
 9. BEFORE MERGING: if Spencer pointed you at a `tasks/todo/*.md` file describing the change, move the file to `tasks/done/YYYY-mm-dd-*.md`, then commit that moved file and push to the PR
-10. Merge PR and delete branch
+10. Merge PR (using regular merge, NEVER squash) and delete branch
 11. Locally: `git fetch origin/main` and fast-forward local main branch
 
 ### UI development patterns
@@ -107,3 +107,4 @@ Follow React best practices:
 - Event handlers passed as props -- a component should **almost never** issue mutations / make API calls / ... itself; e.g. instead of calling `api.games.create(...)`, it should call an `onCreateGame: (...) => Promise<GameId>` prop.
   - ...and, when feasible, components shouldn't issue queries either, taking their data via `props` as well. (Sometimes it isn't feasible for the top-level page component to know all the queries it needs to make; that's fine. This is somewhat flexible.)
   - (This philosophy is somewhat influenced by Elm, esp. [this page](https://guide.elm-lang.org/webapps/structure.html); "rather than making a `Sidebar` component with its own internal update logic, just make a function `viewSidebar`." Though, in React, that view would technically be a "component.")
+- Avoid `as` typecasts as much as possible. Use proper type narrowing or validation instead.
