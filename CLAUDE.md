@@ -26,6 +26,12 @@ If Spencer ever asks you to "make a note" of something, he's probably asking you
 - **Build tools:** Vite + TypeScript
 - **Other tools:** [Convex](https://convex.dev)
 
+### Convex development notes
+
+- After creating or modifying schema files in `convex/`, run `npx convex dev --once` to generate TypeScript types and API definitions
+- The generated files in `convex/_generated/` are required for proper TypeScript support in React components
+- Without running this command, `api.queries.functionName` will show TypeScript errors
+
 ## Directory structure
 
 - `src/` - the user interface run in the browser
