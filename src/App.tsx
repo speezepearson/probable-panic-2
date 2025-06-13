@@ -1,11 +1,31 @@
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { Id } from "../convex/_generated/dataModel";
 import "./App.css";
 
 function App() {
   const games = useQuery(api.queries.getAllGames);
   const currentRounds = useQuery(api.queries.getAllCurrentRounds);
   const questions = useQuery(api.queries.getAllQuestions);
+  
+  const createGame = useMutation(api.mutations.createGame);
+  const startGame = useMutation(api.mutations.startGame);
+
+  const handleCreateGame = async () => {
+    try {
+      await createGame();
+    } catch (error) {
+      alert("Failed to create game: " + error);
+    }
+  };
+
+  const handleStartGame = async (gameId: Id<"games">) => {
+    try {
+      await startGame({ gameId });
+    } catch (error) {
+      alert("Failed to start game: " + error);
+    }
+  };
 
   if (games === undefined || currentRounds === undefined || questions === undefined) {
     return <div>Loading...</div>;
@@ -17,6 +37,12 @@ function App() {
 
       <section>
         <h2>Games ({games.length})</h2>
+        <button 
+          onClick={handleCreateGame}
+          style={{ marginBottom: "20px", padding: "10px 20px", fontSize: "16px" }}
+        >
+          Create New Game
+        </button>
         {games.length === 0 ? (
           <p>No games found</p>
         ) : (
@@ -29,6 +55,14 @@ function App() {
                 <p>Duration: {game.roundDurationMs}ms</p>
                 <p>Players: {game.players.map(p => p.displayName).join(", ")}</p>
                 {game.finishedAt && <p>Finished: {new Date(game.finishedAt).toLocaleString()}</p>}
+                {game.status === "waiting" && (
+                  <button 
+                    onClick={() => handleStartGame(game._id)}
+                    style={{ padding: "8px 16px", marginTop: "10px", backgroundColor: "#007bff", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}
+                  >
+                    Start Game
+                  </button>
+                )}
                 <details>
                   <summary>Round History ({game.roundHistory.length})</summary>
                   {game.roundHistory.map((round) => (
